@@ -249,6 +249,9 @@ type Company struct {
 	BankAccounts            *string   `gorm:"type:text" json:"bankAccounts"`
 	ReferralEnabled         *bool     `gorm:"default:false" json:"referralEnabled"`
 	ReferralRewardAmount    *int      `gorm:"default:10000" json:"referralRewardAmount"`
+	ReferralRewardType      *string   `gorm:"default:FIRST_PAYMENT" json:"referralRewardType"`
+	ReferralRewardBoth      *bool     `gorm:"default:false" json:"referralRewardBoth"`
+	ReferralReferredAmount  *int      `gorm:"default:0" json:"referralReferredAmount"`
 	CreatedAt               time.Time `json:"createdAt"`
 	UpdatedAt               time.Time `json:"updatedAt"`
 }

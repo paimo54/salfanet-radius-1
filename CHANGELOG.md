@@ -6,6 +6,38 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [2.35.0] — 2026-05-14
+### Added (Go Migration — Customer Portal)
+- **Customer Auth Handler** (`internal/api/handlers/customer_auth.go`) — implementasi lengkap:
+  - `POST /api/customer/auth/send-otp` — kirim OTP via WhatsApp dengan rate limit 3x/15 menit
+  - `POST /api/customer/auth/verify-otp` — verifikasi OTP, buat session token 7 hari
+  - `POST /api/customer/auth/login` — login dengan phone/customerId, support OTP on/off
+  - `POST /api/customer/auth/bypass-login` — login tanpa OTP (hanya jika OTP dinonaktifkan)
+- **Customer New Handler** (`internal/api/handlers/customer_new.go`) — endpoint baru:
+  - `PATCH /api/customer/profile` — update nama, phone, email
+  - `GET/POST /api/customer/referral` — info referral & generate kode
+  - `GET /api/customer/referral/rewards` — riwayat reward referral
+  - `POST /api/customer/upgrade-package` — buat invoice upgrade paket
+  - `GET /api/customer/upgrade` — daftar paket tersedia untuk upgrade
+  - `POST /api/customer/topup-direct` — topup saldo langsung
+  - `GET /api/customer/notifications-feed` — feed notifikasi berbasis event
+  - `POST /api/customer/notifications/:id/read` — tandai notifikasi dibaca
+  - `GET /api/customer/payment-methods` — daftar metode pembayaran
+  - `GET /api/customer/payments` — riwayat pembayaran manual
+  - `POST /api/customer/payments/:id/proof` — upload bukti pembayaran
+  - `GET /api/customer/invoices/:id` — detail invoice
+  - `POST /api/customer/invoices/:id/manual-payment` — submit pembayaran manual
+  - `POST /api/customer/invoices/:id/regenerate-payment` — regenerate payment link
+  - `POST /api/customer/ont/reboot` — reboot ONT (stub, butuh GenieACS)
+  - `GET/POST /api/customer/wifi` — info & update WiFi (stub, butuh GenieACS)
+- **Model update** — tambah field `ReferralRewardType`, `ReferralRewardBoth`, `ReferralReferredAmount` ke `Company`; sinkronkan `WhatsappReminderSetting` dengan schema Prisma
+### Files
+- `internal/api/handlers/customer_auth.go` — baru
+- `internal/api/handlers/customer_new.go` — baru
+- `internal/api/router.go` — daftarkan semua route customer baru
+- `internal/db/models/models.go` — tambah field referral di Company
+- `internal/db/models/extra.go` — sinkronkan WhatsappReminderSetting
+
 ## [2.34.4] — 2026-05-13
 ### Added
 - **Sidebar: Permintaan Top-Up & Suspend** — tambah `nav.topupRequests` (`/admin/topup-requests`) dan `nav.suspendRequests` (`/admin/suspend-requests`) sebagai child PPPoE

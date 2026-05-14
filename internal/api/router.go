@@ -695,6 +695,33 @@ func New(db *gorm.DB, p *poller.Poller, hub *ws.Hub, rad *radius.Service, sched 
 	customer.Get("/diagnostics/speedtest", custExtH.DiagnosticsSpeedtest)
 	customer.Get("/diagnostics/traceroute", custExtH.DiagnosticsTraceroute)
 
+	// ─── Customer Auth (new full implementation) ──────────────────────────────
+	custAuthH := handlers.NewCustomerAuthHandler(db)
+	app.Post("/api/customer/auth/login", custAuthH.Login)
+	app.Post("/api/customer/auth/verify-otp", custAuthH.VerifyOTP)
+	app.Post("/api/customer/auth/bypass-login", custAuthH.BypassLogin)
+
+	// ─── Customer New Endpoints ───────────────────────────────────────────────
+	custNewH := handlers.NewCustomerNewHandler(db)
+	customer.Patch("/profile", custNewH.UpdateProfile)
+	customer.Get("/referral", custNewH.GetReferral)
+	customer.Post("/referral", custNewH.GenerateReferralCode)
+	customer.Get("/referral/rewards", custNewH.GetReferralRewards)
+	customer.Post("/upgrade-package", custNewH.UpgradePackage)
+	customer.Get("/upgrade", custNewH.GetUpgradeOptions)
+	customer.Post("/topup-direct", custNewH.TopupDirect)
+	customer.Get("/notifications-feed", custNewH.GetNotifications)
+	customer.Post("/notifications/:id/read", custNewH.MarkNotificationRead)
+	customer.Get("/payment-methods", custNewH.GetPaymentMethods)
+	customer.Get("/payments", custNewH.GetPayments)
+	customer.Post("/payments/:id/proof", custNewH.UploadPaymentProof)
+	customer.Get("/invoices/:id", custNewH.GetInvoiceDetail)
+	customer.Post("/invoices/:id/manual-payment", custNewH.InvoiceManualPayment)
+	customer.Post("/invoices/:id/regenerate-payment", custNewH.RegeneratePayment)
+	customer.Post("/ont/reboot", custNewH.ONTReboot)
+	customer.Get("/wifi", custNewH.GetWifi)
+	customer.Post("/wifi", custNewH.UpdateWifi)
+
 	// ─── Batch 7: WhatsApp CRUD ───────────────────────────────────────────────
 	api.Get("/whatsapp/providers-list", waCrudH.ListProviders)
 	api.Post("/whatsapp/providers-create", waCrudH.CreateProvider)

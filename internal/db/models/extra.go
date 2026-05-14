@@ -326,11 +326,17 @@ func (WhatsappHistory) TableName() string { return "whatsapp_history" }
 
 type WhatsappReminderSetting struct {
 	ID           string    `gorm:"primaryKey;type:varchar(191)" json:"id"`
-	DaysBefore   int       `gorm:"uniqueIndex" json:"daysBefore"` // e.g. 7, 5, 3, 1, 0
-	IsActive     bool      `gorm:"default:true" json:"isActive"`
-	SendTime     string    `gorm:"default:08:00" json:"sendTime"` // HH:MM
-	BatchSize    int       `gorm:"default:50" json:"batchSize"`
-	BatchDelayMs int       `gorm:"default:500" json:"batchDelayMs"`
+	Enabled      bool      `gorm:"default:true" json:"enabled"`
+	ReminderDays string    `gorm:"type:text" json:"reminderDays"`
+	ReminderTime string    `gorm:"default:09:00" json:"reminderTime"`
+	OtpEnabled   bool      `gorm:"default:true" json:"otpEnabled"`
+	OtpExpiry    int       `gorm:"default:5" json:"otpExpiry"`
+	BatchSize    int       `gorm:"default:10" json:"batchSize"`
+	BatchDelay   int       `gorm:"default:60" json:"batchDelay"`
+	Randomize    bool      `gorm:"default:true" json:"randomize"`
+	// Legacy fields kept for scheduler compatibility
+	DaysBefore   int       `gorm:"column:daysBefore" json:"daysBefore"`
+	BatchDelayMs int       `gorm:"column:batchDelayMs" json:"batchDelayMs"`
 	CreatedAt    time.Time `json:"createdAt"`
 	UpdatedAt    time.Time `json:"updatedAt"`
 }
